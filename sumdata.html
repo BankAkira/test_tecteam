@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <title> test3 </title>
+  </head>
+
+  <style>
+    body {
+      background-color: #f0f0f0;
+    }
+  </style>
+  
+  <body>
+    <!-- Navbar -->
+  <div class="container-fluid">
+    <div class="container-">
+      <div class="row">
+        <div class="col-md-12">
+          <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #cae3cc;">
+              <a class="navbar-brand" href="https://bankakira.work/testtec/test3.php">Test TecTeam</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Select buttons -->
+  <div class="container" style="padding-top: 2em;">
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-8">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <a class="btn btn-outline-success" href="#dGraph"> รายวัน </a>
+            </div>
+            <div class="col">
+              <a class="btn btn-outline-success" href="#mGraph"> รายเดือน </a>
+            </div>
+            <div class="col">
+              <a class="btn btn-outline-success" href="#yGraph"> รายปี </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-2">
+      </div>
+    </div>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="dGraph"></canvas>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="mGraph"></canvas>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="yGraph"></canvas>
+  </div>
+
+
+
+  </body>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      showDGraph();
+      showMGraph();
+      showYGraph();
+    });
+
+    function showDGraph() {
+      $.post("daydata.php", function(data){
+        console.log(data);
+        let dDat=[];
+        let dtime =[];
+        for (let i in data) {
+          dtime.push(data[i].calendar);
+          dDat.push(data[i].sum_kwh);
+        }
+
+        const ddata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Dayly Power',
+                  backgroundColor: '#f9acc0',
+                  borderColor: '#f9acc0',
+                  data: dDat
+            }
+          ]
+        };
+
+        const config = {
+          type: 'bar',
+          data: ddata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Power dayly'
+              }
+            }
+          },
+        };
+
+        let dGraph = $('#dGraph');
+        let renderDGraph = new Chart(dGraph,config);
+      }); 
+    }
+
+    function showMGraph() {
+      $.post("monthdata.php", function(data){
+        console.log(data);
+        let mDat=[];
+        let dtime =[];
+        for (let i in data) {
+          dtime.push(data[i].month);
+          mDat.push(data[i].sum_kwh);
+        }
+
+        const mdata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Monthly Power',
+                  backgroundColor: '#49e2ff',
+                  borderColor: '#A9A9A9',
+                  data: mDat
+            }
+          ]
+        };
+
+        const config = {
+          type: 'bar',
+          data: mdata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Power monthly'
+              }
+            }
+          },
+        };
+
+        let mGraph = $('#mGraph');
+        let renderMGraph = new Chart(mGraph,config);
+      }); 
+    }
+
+    function showYGraph() {
+      $.post("yeardata.php", function(data){
+        console.log(data);
+        let yDat=[];
+        let dtime =[];
+        for (let i in data) {
+          dtime.push(data[i].year);
+          yDat.push(data[i].sum_kwh);
+        }
+
+        const ydata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Year Power',
+                  backgroundColor: '#86a5c4',
+                  borderColor: '#86a5c4',
+                  data: yDat
+            }
+          ]
+        };
+
+        const config = {
+          type: 'bar',
+          data: ydata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Power yearly'
+              }
+            }
+          },
+        };
+
+        let yGraph = $('#yGraph');
+        let renderMGraph = new Chart(yGraph,config);
+      }); 
+    }
+  </script>
+ 
+</html>

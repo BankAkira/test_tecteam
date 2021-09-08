@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <title> test3 </title>
+  </head>
+
+  <style>
+    body {
+      background-color: #f0f0f0;
+    }
+  </style>
+  
+  <body>
+    <!-- Navbar -->
+  <div class="container-fluid">
+    <div class="container-">
+      <div class="row">
+        <div class="col-md-12">
+          <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #cae3cc;">
+              <a class="navbar-brand" href="https://bankakira.work/testtec/test3.php">Test TecTeam</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date button -->
+  <div class="container">
+    <form id="dateform" action="data.php" method="GET" target="iframe_target">
+      <iframe id="iframe_target" name="iframe_target" src="#" style="width:0;height:0;border:0px solid #fff; display: none;"></iframe>
+      <div class="form-group row">
+        <label for="Select Date" class="col-lg-2 col-form-label"><h2>Select Date</h2></label>
+          <div class="col-lg-4">
+              <input class="form-control form-control-lg" type="date" id="d" name="d">
+              <button class="btn btn-info btn-lg" type="submit">Update</button>
+          </div>
+      </div>
+     </form>
+  </div>
+
+
+  <!-- Select buttons -->
+  <div class="container" style="padding-top: 2em;">
+    <div class="row">
+      <div class="col-2">
+      </div>
+      <div class="col-8">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <a class="btn btn-outline-success" href="#vGraph"> Voltage </a>
+            </div>
+            <div class="col">
+              <a class="btn btn-outline-success" href="#iGraph"> Current </a>
+            </div>
+            <div class="col">
+              <a class="btn btn-outline-success" href="#pGraph"> Power </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-2">
+      </div>
+    </div>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="vGraph"></canvas>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="iGraph"></canvas>
+  </div>
+  <div class="container"style="padding-top: 2em;">
+    <canvas id="pGraph"></canvas>
+  </div>
+
+
+
+  </body>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      showGraph();
+    });
+    var v1Dat=[];
+    var v2Dat=[];
+    var v3Dat=[];
+    var i1Dat=[];
+    var i2Dat=[];
+    var i3Dat=[];
+    var p1Dat=[];
+    var p2Dat=[];
+    var p3Dat=[];
+    var dtime=[];
+    var renderVGraph;
+    var renderIGraph;
+    var renderPGraph;
+
+    function resetdata() {
+      v1Dat=[];
+      v2Dat=[];
+      v3Dat=[];
+      i1Dat=[];
+      i2Dat=[];
+      i3Dat=[];
+      p1Dat=[];
+      p2Dat=[];
+      p3Dat=[];
+      dtime=[];
+    }
+
+    function showGraph() {
+        const vdata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Volt-1',
+                  backgroundColor: '#A0522D',
+                  borderColor: '#A0522D',
+                  data: v1Dat
+            },
+            {
+                  label: 'Volt-2',
+                  backgroundColor: '#000000',
+                  borderColor: '#000000',
+                  data: v2Dat
+            },
+            {
+                  label: 'Volt-3',
+                  backgroundColor: '#A9A9A9',
+                  borderColor: '#A9A9A9',
+                  data: v3Dat
+            }
+          ]
+        };
+
+        const idata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Current-1',
+                  backgroundColor: '#A0522D',
+                  borderColor: '#A0522D',
+                  data: i1Dat
+            },
+            {
+                  label: 'Current-2',
+                  backgroundColor: '#000000',
+                  borderColor: '#000000',
+                  data: i2Dat
+            },
+            {
+                  label: 'Current-3',
+                  backgroundColor: '#A9A9A9',
+                  borderColor: '#A9A9A9',
+                  data: i3Dat
+            }
+          ]
+        };
+
+        const pdata = {
+          labels: dtime,
+          datasets: [{
+                  label: 'Power-1',
+                  backgroundColor: '#A0522D',
+                  borderColor: '#A0522D',
+                  data: p1Dat
+            },
+            {
+                  label: 'Power-2',
+                  backgroundColor: '#000000',
+                  borderColor: '#000000',
+                  data: p2Dat
+            },
+            {
+                  label: 'Power-3',
+                  backgroundColor: '#A9A9A9',
+                  borderColor: '#A9A9A9',
+                  data: p3Dat
+            }
+          ]
+        };
+
+        const iconfig = {
+          type: 'line',
+          data: idata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: '3P Current Chart'
+              }
+            }
+          },
+        };
+
+        const vconfig = {
+          type: 'line',
+          data: vdata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: '3P Voltage Chart'
+              }
+            }
+          },
+        };
+
+        const pconfig = {
+          type: 'line',
+          data: pdata,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: '3P Power Chart'
+              }
+            }
+          },
+        };
+
+        let vGraph = $('#vGraph');
+        renderVGraph = new Chart(vGraph,vconfig);
+        let iGraph = $('#iGraph');
+        renderIGraph = new Chart(iGraph,iconfig);
+        let pGraph = $('#pGraph');
+        renderPGraph = new Chart(pGraph,pconfig);
+    }
+
+    $('#dateform').submit(function(event) {
+      event.preventDefault();
+      let $form = $(this),
+        dateform = $form.find("input[name='d']").val(),
+        url = $form.attr('action');
+      let posting = $.get(url, {'data': dateform});
+      posting.done(function(data){
+        resetdata();
+        for (let i in data) {
+          dtime.push(data[i].time);
+          v1Dat.push(data[i].v1);
+          v2Dat.push(data[i].v2);
+          v3Dat.push(data[i].v3);
+          i1Dat.push(data[i].i1);
+          i2Dat.push(data[i].i2);
+          i3Dat.push(data[i].i3);
+          p1Dat.push(data[i].p1);
+          p2Dat.push(data[i].p2);
+          p3Dat.push(data[i].p3);
+        }
+        renderVGraph.data.datasets[0].data = v1Dat;
+        renderVGraph.data.datasets[1].data = v2Dat;
+        renderVGraph.data.datasets[2].data = v3Dat;
+        renderVGraph.data.labels = dtime;
+        renderVGraph.update();
+        renderIGraph.data.datasets[0].data = i1Dat;
+        renderIGraph.data.datasets[1].data = i2Dat;
+        renderIGraph.data.datasets[2].data = i3Dat;
+        renderIGraph.data.labels = dtime;
+        renderIGraph.update();
+        renderPGraph.data.datasets[0].data = p1Dat;
+        renderPGraph.data.datasets[1].data = p2Dat;
+        renderPGraph.data.datasets[2].data = p3Dat;
+        renderPGraph.data.labels = dtime;
+        renderPGraph.update();
+      });
+    });
+  </script>
+ 
+</html>
